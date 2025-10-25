@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header>
+    <h1>Dobrodošli na Loto 6/45</h1>
+    <nav>
+        <a th:href="@{/}">Home</a> |
+        <a th:href="@{/tickets}">Svi Listići</a>
+    </nav>
+</header>
+
+<main>
+    <h2>Popis listića</h2>
+    <ul>
+        <li th:each="ticket : ${tickets}">
+            <a th:href="@{|/tickets/${ticket.id}|}" th:text="${ticket.title}">Naslov Listića</a>
+        </li>
+    </ul>
+</main>
+</body>
+</html>
