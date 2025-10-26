@@ -28,7 +28,7 @@ public class TicketController {
     @GetMapping("/new")
     public String newTicketForm(@AuthenticationPrincipal OidcUser user, Model model) {
         model.addAttribute("user", user);
-        return "new_ticket";
+        return "NewTicket";
     }
 
     @PostMapping("/new")
@@ -51,10 +51,10 @@ public class TicketController {
             model.addAttribute("ticket", ticket);
             model.addAttribute("qrCode", base64QR);
 
-            return "ticket_success";
+            return "TicketSuccessful";
         } catch (IllegalArgumentException | IllegalStateException | WriterException | IOException e) {
             model.addAttribute("error", e.getMessage());
-            return "new_ticket";
+            return "NewTicket";
         }
     }
 
@@ -64,6 +64,6 @@ public class TicketController {
                 .orElseThrow(() -> new IllegalArgumentException("Ticket ne postoji"));
         model.addAttribute("ticket", ticket);
         model.addAttribute("round", ticket.getRound());
-        return "view_ticket";
+        return "TicketDetails";
     }
 }
