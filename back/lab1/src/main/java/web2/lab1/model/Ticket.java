@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,8 +23,8 @@ public class Ticket {
     private LocalDateTime purchasedAt = LocalDateTime.now();
 
     @Setter
-    @ElementCollection
-    private List<Integer> numbers;
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketNumber> numbers = new ArrayList<>();
 
     @Setter
     @ManyToOne

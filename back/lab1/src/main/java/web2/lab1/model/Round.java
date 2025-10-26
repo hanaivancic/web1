@@ -5,10 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Entity
+@Getter
 public class Round {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +25,11 @@ public class Round {
 
     @Setter
     @ElementCollection
-    private List<Integer> drawnNumbers;
+    @CollectionTable(name = "round_drawn_numbers", joinColumns = @JoinColumn(name = "round_id"))
+    @Column(name = "number")
+    private List<Integer> drawnNumbers = new ArrayList<>();
 
     @Setter
     @OneToMany(mappedBy = "round")
     private List<Ticket> tickets;
-
 }
