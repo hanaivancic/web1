@@ -2,6 +2,9 @@ package web2.lab1.service;
 
 import org.springframework.stereotype.Service;
 import web2.lab1.model.Round;
+import web2.lab1.model.RoundDrawnNumber;
+import web2.lab1.model.TicketNumber;
+import web2.lab1.repository.RoundDrawnNumberRepository;
 import web2.lab1.repository.RoundRepository;
 
 import java.time.LocalDateTime;
@@ -13,9 +16,11 @@ import java.util.Optional;
 public class RoundService {
 
     private final RoundRepository roundRepository;
+    private final RoundDrawnNumberRepository roundDrawnNumberRepository;
 
-    public RoundService(RoundRepository roundRepository) {
+    public RoundService(RoundRepository roundRepository, RoundDrawnNumberRepository roundDrawnNumberRepository) {
         this.roundRepository = roundRepository;
+        this.roundDrawnNumberRepository = roundDrawnNumberRepository;
     }
 
     public Round startNewRound() {
@@ -41,19 +46,21 @@ public class RoundService {
     public boolean storeResults(List<Integer> numbers) {
         Optional<Round> roundOpt = roundRepository.findTopByOrderByStartedAtDesc();
         if (roundOpt.isEmpty()) {
-            System.out.println("nema kola u bazi");
             return false;
         }
 
         Round round = roundOpt.get();
-        System.out.println("Trenutno kolo: ID=" + round.getId() + ", active=" + round.isActive() + ", drawn=" + round.getDrawnNumbers().isEmpty());
 
         if (round.isActive() || !round.getDrawnNumbers().isEmpty()) return false;
-        System.out.println(numbers);
-        round.setDrawnNumbers(new ArrayList<>(numbers));
-        System.out.println(round.getDrawnNumbers());
+
+        for (Integer n : numbers) {
+            RoundDrawnNumber rn = new RoundDrawnNumber();
+            rn.setRound(round);
+            rn.setNumber(n);
+            roundDrawnNumberRepository.save(rn);
+            round.getDrawnNumbers().add(rn);
+        }
         roundRepository.save(round);
-        System.out.println("Uspješno pohranjeno");
         return true;
     }
 

@@ -24,10 +24,8 @@ public class Round {
     private LocalDateTime closedAt;
 
     @Setter
-    @ElementCollection
-    @CollectionTable(name = "round_drawn_numbers", joinColumns = @JoinColumn(name = "round_id"))
-    @Column(name = "number")
-    private List<Integer> drawnNumbers = new ArrayList<>();
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoundDrawnNumber> drawnNumbers = new ArrayList<>();
 
     @Setter
     @OneToMany(mappedBy = "round")
