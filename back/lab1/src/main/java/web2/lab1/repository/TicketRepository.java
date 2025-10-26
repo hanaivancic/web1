@@ -10,7 +10,5 @@ import java.util.UUID;
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     long countByRound(Round round);
     List<Ticket> findByRound(Round round);
-
-    List<Ticket> getTicketsByUserAndRound(String email, Round round);
 }
 

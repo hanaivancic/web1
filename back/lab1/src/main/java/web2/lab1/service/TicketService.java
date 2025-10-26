@@ -69,8 +69,4 @@ public class TicketService {
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
         return pngOutputStream.toByteArray();
     }
-
-    public List<Ticket> getTicketsByUserAndRound(String email, Round round) {
-        return ticketRepository.getTicketsByUserAndRound(email, round);
-    }
 }

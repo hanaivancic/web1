@@ -33,12 +33,7 @@ public class HomeController {
             Round round = currentRoundOpt.get();
             model.addAttribute("paymentsActive", round.isActive());
             model.addAttribute("drawnNumbers", round.getDrawnNumbers());
-
-            if (user != null) {
-                List<Ticket> userTickets = ticketService.getTicketsByUserAndRound(user.getEmail(), round);
-                model.addAttribute("userTickets", userTickets);
-                model.addAttribute("ticketsCount", userTickets.size());
-            }
+            model.addAttribute("ticketsCount", round.getTickets() != null ? round.getTickets().size() : 0);
         } else {
             model.addAttribute("paymentsActive", false);
             model.addAttribute("ticketsCount", 0);
