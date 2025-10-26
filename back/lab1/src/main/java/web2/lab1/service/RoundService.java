@@ -51,7 +51,7 @@ public class RoundService {
 
         round.setDrawnNumbers(numbers);
         roundRepository.save(round);
-
+        System.out.println("Uspješno pohranjeno");
         return true;
     }
 

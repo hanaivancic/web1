@@ -60,7 +60,6 @@ public class TicketController {
 
     @GetMapping("/{id}")
     public String viewTicket(@PathVariable("id") String id, Model model) {
-        System.out.println("Dolazi request za ticket: " + id);
         Ticket ticket = ticketService.ticketRepository.findById(java.util.UUID.fromString(id))
                 .orElseThrow(() -> new IllegalArgumentException("Ticket ne postoji"));
         model.addAttribute("ticket", ticket);
