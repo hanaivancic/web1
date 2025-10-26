@@ -6,6 +6,7 @@ import web2.lab1.repository.RoundRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -49,7 +50,7 @@ public class RoundService {
 
         if (round.isActive() || round.getDrawnNumbers() != null) return false;
 
-        round.setDrawnNumbers(numbers);
+        round.setDrawnNumbers(new ArrayList<>(numbers));
         roundRepository.save(round);
         System.out.println("Uspješno pohranjeno");
         return true;

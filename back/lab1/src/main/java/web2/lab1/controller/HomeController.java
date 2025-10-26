@@ -26,6 +26,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@AuthenticationPrincipal OidcUser user, Model model) {
+        if (user == null) {
+            return "redirect:/oauth2/authorization/auth0";
+        }
+
         model.addAttribute("user", user);
 
         Optional<Round> currentRoundOpt = roundService.getCurrentRound();
