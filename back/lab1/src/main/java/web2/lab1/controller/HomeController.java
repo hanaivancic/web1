@@ -10,6 +10,6 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("tickets", java.util.List.of());
-        return "home";
+        return "Home";
     }
 }
