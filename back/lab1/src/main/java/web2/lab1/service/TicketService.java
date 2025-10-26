@@ -1,21 +1,24 @@
 package web2.lab1.service;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import web2.lab1.model.Round;
 import web2.lab1.model.Ticket;
 import web2.lab1.repository.RoundRepository;
 import web2.lab1.repository.TicketRepository;
-import web2.lab1.util.QrUtil;
 
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TicketService {
-    private final TicketRepository ticketRepository;
+
+    public final TicketRepository ticketRepository;
     private final RoundRepository roundRepository;
 
     public TicketService(TicketRepository ticketRepository, RoundRepository roundRepository) {
@@ -23,48 +26,35 @@ public class TicketService {
         this.roundRepository = roundRepository;
     }
 
-    @Transactional
-    public UUID createTicket(String personalId, String numbersCsv) {
-        // validation
-        if (personalId == null || personalId.isBlank() || personalId.length() > 20) {
-            throw new IllegalArgumentException("Personal ID must be 1..20 characters");
-        }
-        List<Integer> nums = Arrays.stream(numbersCsv.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    try { return Integer.valueOf(s); }
-                    catch (NumberFormatException e) { throw new IllegalArgumentException("Numbers must be integers"); }
-                })
-                .collect(Collectors.toList());
+    public Ticket createTicket(String personalId, List<Integer> numbers) {
+        if (personalId == null || personalId.isEmpty() || personalId.length() > 20)
+            throw new IllegalArgumentException("Neispravan broj osobne iskaznice");
 
-        if (nums.size() < 6 || nums.size() > 10) {
-            throw new IllegalArgumentException("Numbers count must be between 6 and 10");
-        }
-        Set<Integer> set = new HashSet<>(nums);
-        if (set.size() != nums.size()) {
-            throw new IllegalArgumentException("Duplicate numbers are not allowed");
-        }
-        for (int n : nums) {
-            if (n < 1 || n > 45) throw new IllegalArgumentException("All numbers must be in range 1..45");
-        }
+        if (numbers.size() < 6 || numbers.size() > 10)
+            throw new IllegalArgumentException("Brojevi moraju biti između 6 i 10");
+
+        if (numbers.stream().anyMatch(n -> n < 1 || n > 45))
+            throw new IllegalArgumentException("Svi brojevi moraju biti između 1 i 45");
+
+        if (numbers.stream().distinct().count() != numbers.size())
+            throw new IllegalArgumentException("Ne smije biti duplikata među brojevima");
 
         Round round = roundRepository.findByActiveTrue()
-                .orElseThrow(() -> new IllegalStateException("No active round"));
+                .orElseThrow(() -> new IllegalStateException("Nema aktivnog kola"));
 
-        Ticket t = new Ticket();
-        t.setId(UUID.randomUUID());
-        t.setPersonalId(personalId);
-        t.setNumbers(nums);
-        t.setRound(round);
-        t.setPurchasedAt(Instant.now());
-        ticketRepository.save(t);
-        return t.getId();
+        Ticket ticket = new Ticket();
+        ticket.setPersonalId(personalId);
+        ticket.setNumbers(numbers);
+        ticket.setRound(round);
+
+        return ticketRepository.save(ticket);
     }
 
-    public byte[] generateQrForTicket(UUID ticketId, String baseUrl) throws Exception {
-        String url = baseUrl.endsWith("/") ? baseUrl + "ticket/" + ticketId : baseUrl + "/ticket/" + ticketId;
-        return QrUtil.generateQrPng(url, 400, 400);
+    public byte[] generateQRCode(String ticketUrl) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        var bitMatrix = qrCodeWriter.encode(ticketUrl, BarcodeFormat.QR_CODE, 250, 250);
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        return pngOutputStream.toByteArray();
     }
 }
-

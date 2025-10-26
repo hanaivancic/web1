@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Uplata listića</title>
+</head>
+<body>
+<h2>Uplati novi listić</h2>
+
+<div th:if="${error}" style="color:red;">
+    <p th:text="${error}"></p>
+</div>
+
+<form th:action="@{/tickets/new}" method="post">
+    <label>Osobna iskaznica / putovnica:</label><br>
+    <input type="text" name="personalId" maxlength="20" required><br><br>
+
+    <label>Brojevi (6-10 brojeva, odvojeni zarezom):</label><br>
+    <input type="text" name="numbers" placeholder="1,5,12,23,34,45" required><br><br>
+
+    <button type="submit">Uplati</button>
+</form>
+
+<a th:href="@{/}">Povratak na početnu</a>
+</body>
+</html>

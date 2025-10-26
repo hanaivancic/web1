@@ -2,19 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Pregled listića</title>
+    <title>Listić uplaćen</title>
 </head>
 <body>
-<h2>Podaci o listiću</h2>
+<h2>Uplata uspješna!</h2>
 
 <p>ID listića: <span th:text="${ticket.id}"></span></p>
 <p>Osobna iskaznica: <span th:text="${ticket.personalId}"></span></p>
 <p>Brojevi: <span th:text="${ticket.numbers}"></span></p>
 
-<h3>Trenutno kolo</h3>
-<p th:text="'Kolo #' + ${round.id}"></p>
-<p th:if="${round.drawnNumbers != null}" th:text="'Izvučeni brojevi: ' + ${round.drawnNumbers}"></p>
-<p th:if="${round.drawnNumbers == null}">Izvučeni brojevi još nisu dostupni.</p>
+<p>QR kod za provjeru:</p>
+<img th:src="'data:image/png;base64,' + ${qrCode}" />
 
 <a th:href="@{/}">Povratak na početnu</a>
 </body>

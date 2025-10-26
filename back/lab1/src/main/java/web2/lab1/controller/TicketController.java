@@ -1,94 +1,69 @@
 package web2.lab1.controller;
 
+import com.google.zxing.WriterException;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletRequest;
-import web2.lab1.model.Round;
 import web2.lab1.model.Ticket;
-import web2.lab1.repository.RoundRepository;
-import web2.lab1.repository.TicketRepository;
 import web2.lab1.service.TicketService;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
+@Controller
+@RequestMapping("/tickets")
 public class TicketController {
+
     private final TicketService ticketService;
-    private final TicketRepository ticketRepository;
-    private final RoundRepository roundRepository;
 
-    public TicketController(TicketService ticketService, TicketRepository ticketRepository, RoundRepository roundRepository) {
+    public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
-        this.ticketRepository = ticketRepository;
-        this.roundRepository = roundRepository;
     }
 
-    @GetMapping("/api/status")
-    public ResponseEntity<Map<String,Object>> status(@AuthenticationPrincipal OidcUser user) {
-        Map<String,Object> out = new HashMap<>();
-        if (user != null) {
-            out.put("user", Map.of(
-                    "sub", user.getSubject(),
-                    "name", user.getFullName(),
-                    "email", user.getEmail()
-            ));
-        }
-        roundRepository.findByActiveTrue().ifPresent(r -> {
-            out.put("roundActive", r.isActive());
-            out.put("ticketsCount", ticketRepository.countByRound(r));
-            out.put("drawnNumbers", r.getDrawnNumbers());
-        });
-        return ResponseEntity.ok(out);
+    @GetMapping("/new")
+    public String newTicketForm(@AuthenticationPrincipal OidcUser user, Model model) {
+        model.addAttribute("user", user);
+        return "new_ticket";
     }
 
-    @PostMapping(value = "/tickets", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> createTicket(
-            @RequestParam String personalId,
-            @RequestParam String numbers,
-            HttpServletRequest request,
-            @AuthenticationPrincipal OidcUser user
-    ) throws Exception {
-        if (user == null) {
-            return ResponseEntity.status(401).build();
-        }
-
-        UUID id;
+    @PostMapping("/new")
+    public String createTicket(@AuthenticationPrincipal OidcUser user,
+                               @RequestParam String personalId,
+                               @RequestParam String numbers,
+                               Model model) {
         try {
-            id = ticketService.createTicket(personalId, numbers);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage().getBytes());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).body(e.getMessage().getBytes());
+            List<Integer> numbersList = Arrays.stream(numbers.split(","))
+                    .map(String::trim)
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+
+            Ticket ticket = ticketService.createTicket(personalId, numbersList);
+
+            String ticketUrl = "https://tvoja-aplikacija-u-oblaku/tickets/" + ticket.getId();
+            byte[] qrCode = ticketService.generateQRCode(ticketUrl);
+            String base64QR = java.util.Base64.getEncoder().encodeToString(qrCode);
+
+            model.addAttribute("ticket", ticket);
+            model.addAttribute("qrCode", base64QR);
+
+            return "ticket_success";
+        } catch (IllegalArgumentException | IllegalStateException | WriterException | IOException e) {
+            model.addAttribute("error", e.getMessage());
+            return "new_ticket";
         }
-
-        byte[] png = ticketService.generateQrForTicket(id, getBaseUrl(request));
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(png);
     }
 
-    @GetMapping("/ticket/{id}")
-    public ResponseEntity<Map<String,Object>> viewTicket(@PathVariable UUID id) {
-        Optional<Ticket> maybe = ticketRepository.findById(id);
-        if (maybe.isEmpty()) return ResponseEntity.notFound().build();
-        Ticket t = maybe.get();
-        Map<String,Object> out = new HashMap<>();
-        out.put("ticketId", t.getId());
-        out.put("personalId", t.getPersonalId());
-        out.put("numbers", t.getNumbers());
-        out.put("purchasedAt", t.getPurchasedAt());
-        Round r = t.getRound();
-        out.put("roundId", r != null ? r.getId() : null);
-        out.put("drawnNumbers", r != null ? r.getDrawnNumbers() : null);
-        return ResponseEntity.ok(out);
-    }
-
-    private String getBaseUrl(HttpServletRequest req) {
-        StringBuffer url = req.getRequestURL();
-        String uri = req.getRequestURI();
-        return url.substring(0, url.length() - uri.length());
+    @GetMapping("/{id}")
+    public String viewTicket(@PathVariable("id") String id, Model model) {
+        Ticket ticket = ticketService.ticketRepository.findById(java.util.UUID.fromString(id))
+                .orElseThrow(() -> new IllegalArgumentException("Ticket ne postoji"));
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("round", ticket.getRound());
+        return "view_ticket";
     }
 }
-

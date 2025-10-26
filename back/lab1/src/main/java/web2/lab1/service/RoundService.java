@@ -1,50 +1,55 @@
 package web2.lab1.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import web2.lab1.model.Round;
 import web2.lab1.repository.RoundRepository;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RoundService {
+
     private final RoundRepository roundRepository;
 
     public RoundService(RoundRepository roundRepository) {
         this.roundRepository = roundRepository;
     }
 
-    @Transactional
-    public Round createNewRoundIfNoneActive() {
-        Optional<Round> active = roundRepository.findByActiveTrue();
-        if (active.isPresent()) {
-            return active.get();
-        }
-        Round r = new Round();
-        r.setActive(true);
-        r.setStartedAt(Instant.now());
-        return roundRepository.save(r);
-    }
-
-    @Transactional
-    public void closeActiveRoundIfAny() {
+    public Round startNewRound() {
         roundRepository.findByActiveTrue().ifPresent(r -> {
             r.setActive(false);
+            r.setClosedAt(LocalDateTime.now());
+            roundRepository.save(r);
+        });
+
+        Round round = new Round();
+        round.setActive(true);
+        return roundRepository.save(round);
+    }
+
+    public void closeRound() {
+        roundRepository.findByActiveTrue().ifPresent(r -> {
+            r.setActive(false);
+            r.setClosedAt(LocalDateTime.now());
             roundRepository.save(r);
         });
     }
 
-    @Transactional
-    public boolean storeDrawnNumbersIfAllowed(java.util.List<Integer> numbers) {
-        Optional<Round> maybe = roundRepository.findByActiveTrue();
-        if (maybe.isEmpty()) return false; // no round -> bad request per spec
-        Round r = maybe.get();
-        if (r.isActive()) return false; // can't store while active
-        if (r.getDrawnNumbers() != null && !r.getDrawnNumbers().isEmpty()) return false; // already stored
-        r.setDrawnNumbers(numbers);
-        roundRepository.save(r);
+    public boolean storeResults(List<Integer> numbers) {
+        Optional<Round> roundOpt = roundRepository.findByActiveTrue();
+        if (roundOpt.isEmpty()) return false;
+        Round round = roundOpt.get();
+        if (round.getDrawnNumbers() != null) return false;
+
+        round.setDrawnNumbers(numbers);
+        round.setActive(false);
+        roundRepository.save(round);
         return true;
+    }
+
+    public Optional<Round> getCurrentRound() {
+        return roundRepository.findByActiveTrue();
     }
 }
