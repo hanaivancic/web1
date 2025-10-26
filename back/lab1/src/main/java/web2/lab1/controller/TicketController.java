@@ -44,7 +44,7 @@ public class TicketController {
 
             Ticket ticket = ticketService.createTicket(personalId, numbersList);
 
-            String ticketUrl = "https://tvoja-aplikacija-u-oblaku/tickets/" + ticket.getId();
+            String ticketUrl = "https://web1-zcj6.onrender.com/tickets/" + ticket.getId();
             byte[] qrCode = ticketService.generateQRCode(ticketUrl);
             String base64QR = java.util.Base64.getEncoder().encodeToString(qrCode);
 
