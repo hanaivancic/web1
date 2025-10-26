@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface RoundRepository extends JpaRepository<Round, Long> {
     Optional<Round> findByActiveTrue();
+    Optional<Round> findTopByOrderByStartedAtDesc();
 }
 

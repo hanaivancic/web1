@@ -38,16 +38,19 @@ public class RoundService {
     }
 
     public boolean storeResults(List<Integer> numbers) {
-        Optional<Round> roundOpt = roundRepository.findByActiveTrue();
+        Optional<Round> roundOpt = roundRepository.findTopByOrderByStartedAtDesc();
         if (roundOpt.isEmpty()) return false;
+
         Round round = roundOpt.get();
-        if (round.getDrawnNumbers() != null) return false;
+
+        if (round.isActive() || round.getDrawnNumbers() != null) return false;
 
         round.setDrawnNumbers(numbers);
-        round.setActive(false);
         roundRepository.save(round);
+
         return true;
     }
+
 
     public Optional<Round> getCurrentRound() {
         return roundRepository.findByActiveTrue();
