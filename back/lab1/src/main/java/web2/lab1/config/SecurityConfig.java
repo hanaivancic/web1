@@ -25,7 +25,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("https://web1-zcj6.onrender.com")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("SSO")
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
