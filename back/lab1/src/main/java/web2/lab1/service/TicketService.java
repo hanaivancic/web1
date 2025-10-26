@@ -55,7 +55,7 @@ public class TicketService {
             TicketNumber tn = new TicketNumber();
             tn.setTicket(ticket);
             tn.setNumber(n);
-            ticketNumberRepository.save(tn);  // <-- ovdje
+            ticketNumberRepository.save(tn);
             ticket.getNumbers().add(tn);
         }
 

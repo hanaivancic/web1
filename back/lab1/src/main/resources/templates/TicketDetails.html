@@ -9,11 +9,14 @@
 
 <p>ID listića: <span th:text="${ticket.id}"></span></p>
 <p>Osobna iskaznica: <span th:text="${ticket.personalId}"></span></p>
-<p>Brojevi: <span th:text="${ticket.numbers}"></span></p>
+<h3>Brojevi na listiću:</h3>
+<ul>
+    <li th:each="n : ${ticket.numbers}" th:text="${n.number}"></li>
+</ul>
 
 <h3>Trenutno kolo</h3>
 <p th:text="'Kolo #' + ${round.id}"></p>
-<p th:if="${round.drawnNumbers != null}" th:text="'Izvučeni brojevi: ' + ${round.drawnNumbers}"></p>
+<p th:if="${round.drawnNumbers != null}" th:text="'Izvučeni brojevi: '"> <li th:each="num : ${round.drawnNumbers}" th:text="${num}"></li></p>
 <p th:if="${round.drawnNumbers == null}">Izvučeni brojevi još nisu dostupni.</p>
 
 <a th:href="@{/}">Povratak na početnu</a>
