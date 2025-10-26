@@ -15,9 +15,9 @@
 </ul>
 
 <h3>Trenutno kolo</h3>
-<p th:text="'Kolo #' + ${round.id}"></p>
-<p th:if="${round.drawnNumbers != null}" th:text="'Izvučeni brojevi: '"> <li th:each="num : ${round.drawnNumbers}" th:text="${num}"></li></p>
-<p th:if="${round.drawnNumbers == null}">Izvučeni brojevi još nisu dostupni.</p>
+<p th:text="'Kolo #' + ${ticket.round.id}"></p>
+<p th:if="${ticket.round.drawnNumbers != null}" th:text="'Izvučeni brojevi: '"> <li th:each="num : ${ticket.round.drawnNumbers}" th:text="${num}"></li></p>
+<p th:if="${ticket.round.drawnNumbers == null}">Izvučeni brojevi još nisu dostupni.</p>
 
 <a th:href="@{/}">Povratak na početnu</a>
 </body>

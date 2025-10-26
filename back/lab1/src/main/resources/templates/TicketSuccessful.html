@@ -15,8 +15,8 @@
 </ul>
 
 <h3>Izvučeni brojevi kola:</h3>
-<ul th:if="${round.drawnNumbers != null}">
-    <li th:each="num : ${round.drawnNumbers}" th:text="${num}"></li>
+<ul th:if="${ticket.round.drawnNumbers != null}">
+    <li th:each="num : ${ticket.round.drawnNumbers}" th:text="${num}"></li>
 </ul>
 
 
