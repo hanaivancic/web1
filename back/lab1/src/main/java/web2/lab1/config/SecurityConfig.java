@@ -22,7 +22,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("https://dev-x123pxixnji5p268.us.auth0.com/v2/logout?returnTo=https://web1-zcj6.onrender.com")
+                        .logoutSuccessUrl("https://web1-zcj6.onrender.com")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")

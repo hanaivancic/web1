@@ -46,7 +46,7 @@ public class RoundService {
         }
 
         Round round = roundOpt.get();
-        System.out.println("Trenutno kolo: ID=" + round.getId() + ", active=" + round.isActive() + ", drawn=" + round.getDrawnNumbers());
+        System.out.println("Trenutno kolo: ID=" + round.getId() + ", active=" + round.isActive() + ", drawn=" + round.getDrawnNumbers().isEmpty());
 
         if (round.isActive() || round.getDrawnNumbers().isEmpty()) return false;
         System.out.println(numbers);
