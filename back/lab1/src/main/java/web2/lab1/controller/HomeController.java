@@ -28,17 +28,12 @@ public class HomeController {
     public String home(@AuthenticationPrincipal OidcUser user, Model model) {
         model.addAttribute("user", user);
 
-        var currentRoundOpt = roundService.getCurrentRound();
+        Optional<Round> currentRoundOpt = roundService.getCurrentRound();
         if (currentRoundOpt.isPresent()) {
             Round round = currentRoundOpt.get();
             model.addAttribute("paymentsActive", round.isActive());
             model.addAttribute("drawnNumbers", round.getDrawnNumbers());
-
-            if (user != null) {
-                List<Ticket> userTickets = ticketService.getTicketsByUserAndRound(user.getEmail(), round);
-                model.addAttribute("userTickets", userTickets);
-                model.addAttribute("ticketsCount", userTickets.size());
-            }
+            model.addAttribute("ticketsCount", round.getTickets() != null ? round.getTickets().size() : 0);
         } else {
             model.addAttribute("paymentsActive", false);
             model.addAttribute("ticketsCount", 0);
@@ -46,6 +41,5 @@ public class HomeController {
 
         return "Home";
     }
-
 
 }

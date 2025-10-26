@@ -20,9 +20,6 @@ public class Ticket {
     @Column(length = 20)
     private String personalId;
 
-    @Setter
-    private String userEmail;
-
     private LocalDateTime purchasedAt = LocalDateTime.now();
 
     @Setter
