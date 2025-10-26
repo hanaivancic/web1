@@ -52,7 +52,7 @@
 
     <div class="user-info" th:if="${user != null}">
         <span th:text="'Prijavljeni korisnik: (' + ${user.email} + ')'"></span>
-        <form th:action="@{/logout}" method="post" style="margin: 0;">
+        <form th:action="@{/logout}" method="get" style="margin:0;">
             <button type="submit" class="logout-btn">Odjavi se</button>
         </form>
     </div>

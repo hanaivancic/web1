@@ -15,7 +15,6 @@ import web2.lab1.repository.TicketRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class TicketService {
