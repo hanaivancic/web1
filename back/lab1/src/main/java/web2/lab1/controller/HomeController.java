@@ -39,7 +39,7 @@ public class HomeController {
             model.addAttribute("ticketsCount", 0);
         }
 
-        return "home";
+        return "Home";
     }
 
 }
