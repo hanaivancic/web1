@@ -39,9 +39,13 @@ public class RoundService {
 
     public boolean storeResults(List<Integer> numbers) {
         Optional<Round> roundOpt = roundRepository.findTopByOrderByStartedAtDesc();
-        if (roundOpt.isEmpty()) return false;
+        if (roundOpt.isEmpty()) {
+            System.out.println("nema kola u bazi");
+            return false;
+        }
 
         Round round = roundOpt.get();
+        System.out.println("Trenutno kolo: ID=" + round.getId() + ", active=" + round.isActive() + ", drawn=" + round.getDrawnNumbers());
 
         if (round.isActive() || round.getDrawnNumbers() != null) return false;
 
