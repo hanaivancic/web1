@@ -23,7 +23,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            String auth0Domain = "https://dev-x123pxixnji5p268.us.auth0.com";
+                            String auth0Domain = "dev-x123pxixnji5p268.us.auth0.com";
                             String returnTo = "https://web1-zcj6.onrender.com/";
                             String logoutUrl = "https://" + auth0Domain + "/v2/logout?returnTo=" + returnTo;
                             response.sendRedirect(logoutUrl);

@@ -33,13 +33,16 @@ public class HomeController {
         Optional<Round> currentRoundOpt = roundService.getCurrentRound();
         if (currentRoundOpt.isPresent()) {
             Round round = currentRoundOpt.get();
+            model.addAttribute("round", round);
             model.addAttribute("paymentsActive", round.isActive());
-            model.addAttribute("drawnNumbers", round.getDrawnNumbers());
             model.addAttribute("ticketsCount", round.getTickets() != null ? round.getTickets().size() : 0);
+            model.addAttribute("drawnNumbers", round.getDrawnNumbers() != null ? round.getDrawnNumbers() : null);
         } else {
             model.addAttribute("paymentsActive", false);
-            model.addAttribute("ticketsCount", 0);
+            model.addAttribute("ticketsCount", null);
+            model.addAttribute("drawnNumbers", null);
         }
+
 
         return "Home";
     }
