@@ -63,6 +63,7 @@ public class TicketController {
                 .orElseThrow(() -> new IllegalArgumentException("Ticket ne postoji"));
         model.addAttribute("ticket", ticket);
         model.addAttribute("round", ticket.getRound());
+        model.addAttribute("drawnNumbers", ticket.getRound().getDrawnNumbers());
         return "TicketDetails";
     }
 }
