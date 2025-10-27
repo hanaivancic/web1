@@ -3,6 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Uplata listića</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        header, main { margin-bottom: 20px; }
+        a.button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+        a.button:hover { background-color: #0056b3; }
+        ul { list-style: none; padding-left: 0; }
+    </style>
 </head>
 <body>
 <h2>Uplati novi listić</h2>
@@ -13,7 +36,7 @@
 
 <form th:action="@{/tickets/new}" method="post">
     <label>Osobna iskaznica / putovnica:</label><br>
-    <input type="text" name="personalId" maxlength="20" required><br><br>
+    <input type="text" name="personalId" required><br><br>
 
     <label>Brojevi (6-10 brojeva, odvojeni zarezom):</label><br>
     <input type="text" name="numbers" placeholder="1,5,12,23,34,45" required><br><br>
