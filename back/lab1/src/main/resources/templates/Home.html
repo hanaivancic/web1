@@ -76,7 +76,7 @@
     <section th:if="${drawnNumbers != null}">
         <h3>Izvučeni brojevi:</h3>
         <ul>
-            <li th:each="num : ${drawnNumbers}" th:text="${num}"></li>
+            <li th:each="num : ${drawnNumbers}" th:text="${num.number}"></li>
         </ul>
     </section>
 
