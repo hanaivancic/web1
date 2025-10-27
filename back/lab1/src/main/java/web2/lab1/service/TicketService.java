@@ -20,7 +20,7 @@ import java.util.List;
 public class TicketService {
 
     public final TicketRepository ticketRepository;
-    private final RoundRepository roundRepository;
+    public final RoundRepository roundRepository;
     private final TicketNumberRepository ticketNumberRepository;
 
     public TicketService(TicketRepository ticketRepository, RoundRepository roundRepository, TicketNumberRepository ticketNumberRepository) {

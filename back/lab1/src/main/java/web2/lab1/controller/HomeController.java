@@ -36,7 +36,7 @@ public class HomeController {
             model.addAttribute("round", round);
             model.addAttribute("paymentsActive", round.isActive());
             model.addAttribute("ticketsCount", round.getTickets() != null ? round.getTickets().size() : 0);
-            model.addAttribute("drawnNumbers", round.getDrawnNumbers() != null ? round.getDrawnNumbers() : null);
+            model.addAttribute("drawnNumbers", round.getDrawnNumbers());
         } else {
             model.addAttribute("paymentsActive", false);
             model.addAttribute("ticketsCount", null);

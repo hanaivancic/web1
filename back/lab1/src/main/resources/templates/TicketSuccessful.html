@@ -36,12 +36,6 @@
     <li th:each="n : ${ticket.numbers}" th:text="${n.number}"></li>
 </ul>
 
-<h3>Izvučeni brojevi kola:</h3>
-<ul th:if="${ticket.round.drawnNumbers != null}">
-    <li th:each="num : ${ticket.round.drawnNumbers}" th:text="${num.number}"></li>
-</ul>
-
-
 <p>QR kod za provjeru:</p>
 <img th:src="'data:image/png;base64,' + ${qrCode}" />
 

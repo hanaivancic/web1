@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import web2.lab1.model.Round;
 import web2.lab1.model.Ticket;
 import web2.lab1.service.TicketService;
 
@@ -61,9 +62,11 @@ public class TicketController {
     public String viewTicket(@PathVariable("id") String id, Model model) {
         Ticket ticket = ticketService.ticketRepository.findById(java.util.UUID.fromString(id))
                 .orElseThrow(() -> new IllegalArgumentException("Ticket ne postoji"));
+        Round round = ticketService.roundRepository.findById(ticket.getRound().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Round ne postoji"));
         model.addAttribute("ticket", ticket);
-        model.addAttribute("round", ticket.getRound());
-        model.addAttribute("drawnNumbers", ticket.getRound().getDrawnNumbers());
+        model.addAttribute("round", round);
+        model.addAttribute("drawnNumbers", round.getDrawnNumbers());
         return "TicketDetails";
     }
 }
