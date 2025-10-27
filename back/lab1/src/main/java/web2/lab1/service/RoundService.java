@@ -66,6 +66,7 @@ public class RoundService {
 
 
     public Optional<Round> getCurrentRound() {
-        return roundRepository.findByActiveTrue();
+        Optional<Round> roundOpt = roundRepository.findTopByOrderByStartedAtDesc();
+        return Optional.of(roundOpt.get());
     }
 }
